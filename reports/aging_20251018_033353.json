@@ -1,0 +1,29 @@
+{
+  "report_type": "aging",
+  "period": {
+    "start": "2024-01-01",
+    "end": "2024-01-31"
+  },
+  "generated_at": "2025-10-18T03:33:53.940795",
+  "data": {
+    "receivables": {
+      "total": 0,
+      "aging": {
+        "current": 0,
+        "31_60": 0,
+        "61_90": 0,
+        "over_90": 0
+      }
+    },
+    "payables": {
+      "total": 0,
+      "aging": {
+        "current": 0,
+        "31_60": 0,
+        "61_90": 0,
+        "over_90": 0
+      }
+    },
+    "net_position": 0
+  }
+}

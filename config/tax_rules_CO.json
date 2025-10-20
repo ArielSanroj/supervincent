@@ -1,0 +1,57 @@
+{
+  "country_code": "CO",
+  "country_name": "Colombia",
+  "currency": "COP",
+  "iva_rates": {
+    "standard": 0.19,
+    "reduced": 0.05,
+    "exempt": 0.0,
+    "excluded": 0.0
+  },
+  "retenciones": {
+    "rete_iva": {
+      "natural": 0.035,
+      "juridico": 0.035,
+      "threshold": 1000000,
+      "description": "Retención en la fuente por IVA"
+    },
+    "rete_fuente": {
+      "natural": 0.11,
+      "juridico": 0.035,
+      "threshold": 1000000,
+      "description": "Retención en la fuente"
+    },
+    "rete_ica": {
+      "natural": 0.01,
+      "juridico": 0.01,
+      "threshold": 1000000,
+      "description": "Retención de Industria y Comercio"
+    }
+  },
+  "validation_rules": {
+    "tolerance_percentage": 0.01,
+    "require_nit_providers": true,
+    "require_cc_clients": true,
+    "max_amount_without_approval": 1000000,
+    "nit_format_validation": true,
+    "dian_compliance_required": true
+  },
+  "dian_requirements": {
+    "electronic_invoice_required": true,
+    "cufe_validation": true,
+    "qr_code_required": true,
+    "digital_signature_required": true
+  },
+  "accounting_accounts": {
+    "iva_por_pagar": 240801,
+    "iva_por_cobrar": 135501,
+    "rete_iva_por_pagar": 240802,
+    "rete_fuente_por_pagar": 240803,
+    "rete_ica_por_pagar": 240804
+  },
+  "thresholds": {
+    "high_amount": 10000000,
+    "very_high_amount": 50000000,
+    "electronic_invoice_mandatory": 5000000
+  }
+}

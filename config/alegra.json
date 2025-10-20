@@ -1,0 +1,19 @@
+{
+  "endpoints": {
+    "invoices": "/api/v1/invoices",
+    "bills": "/api/v1/bills",
+    "contacts": "/api/v1/contacts",
+    "items": "/api/v1/items",
+    "accounts": "/api/v1/accounts",
+    "reports": {
+      "general_ledger": "/api/v1/reports/general-ledger",
+      "trial_balance": "/api/v1/reports/trial-balance",
+      "journal": "/api/v1/reports/journal"
+    }
+  },
+  "timeouts": {
+    "default": 30,
+    "reports": 60
+  },
+  "retry_attempts": 3
+}

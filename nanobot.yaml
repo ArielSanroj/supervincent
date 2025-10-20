@@ -1,0 +1,55 @@
+agents:
+  invoice_classifier:
+    name: Invoice Classifier
+    description: LLM-based classifier that labels invoices as compra or venta using Nanobot.
+    instructions: |
+      You are an assistant that reads extracted invoice text and decides if it describes a purchase (compra) or a sale (venta).
+      Always respond with a JSON object: {"tipo": "compra"|"venta", "confianza": <0-1 float>, "razon": "short explanation"}.
+      Use context clues even when keywords conflict; rate 1.0 when certain, else lower.
+    model: gpt-4.1-mini
+
+  invoice_triage:
+    name: Invoice Triage
+    description: Reviews uncertain extraction results and Alegra API errors to suggest corrections.
+    instructions: |
+      You receive invoice extraction data, potential errors, and context. Suggest fixes or confirm data as valid.
+      Respond in JSON with fields: {"estado": "ok"|"revisar", "comentarios": "...", "datos_corregidos": {...optional...}}.
+    model: gpt-4.1
+
+  reports_assistant:
+    name: Reports Assistant
+    description: Answers questions about logs, backups, and generated reports.
+    instructions: |
+      Use available filesystem tools to inspect logs/, reports/, and backups. Provide concise, auditable answers.
+    model: gpt-4.1
+    mcpServers:
+      - logs_fs
+      - reports_fs
+      - backups_fs
+      - facturas_fs
+
+mcpServers:
+  logs_fs:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "./logs"
+  reports_fs:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "./reports"
+  backups_fs:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "./backup"
+  facturas_fs:
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "./facturas"

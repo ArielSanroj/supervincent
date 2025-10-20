@@ -1,0 +1,73 @@
+{
+  "default_accounts": {
+    "purchases": {
+      "id": 1,
+      "name": "Compras",
+      "type": "expense"
+    },
+    "sales": {
+      "id": 2,
+      "name": "Ventas",
+      "type": "income"
+    },
+    "inventory": {
+      "id": 3,
+      "name": "Inventario",
+      "type": "asset"
+    },
+    "accounts_payable": {
+      "id": 4,
+      "name": "Cuentas por Pagar",
+      "type": "liability"
+    },
+    "accounts_receivable": {
+      "id": 5,
+      "name": "Cuentas por Cobrar",
+      "type": "asset"
+    },
+    "tax_payable": {
+      "id": 6,
+      "name": "Impuestos por Pagar",
+      "type": "liability"
+    },
+    "tax_receivable": {
+      "id": 7,
+      "name": "Impuestos por Cobrar",
+      "type": "asset"
+    }
+  },
+  "item_categories": {
+    "product": {
+      "accounting_account": 1,
+      "tax_category": "standard"
+    },
+    "service": {
+      "accounting_account": 2,
+      "tax_category": "standard"
+    },
+    "expense": {
+      "accounting_account": 1,
+      "tax_category": "standard"
+    }
+  },
+  "contact_required_fields": {
+    "provider": ["name", "type", "identificationObject"],
+    "client": ["name", "type", "identificationObject"]
+  },
+  "contact_defaults": {
+    "provider": {
+      "type": "provider",
+      "identificationObject": {
+        "type": "NIT",
+        "number": "000000000"
+      }
+    },
+    "client": {
+      "type": "client", 
+      "identificationObject": {
+        "type": "CC",
+        "number": "000000000"
+      }
+    }
+  }
+}

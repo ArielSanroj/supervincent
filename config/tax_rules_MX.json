@@ -1,0 +1,50 @@
+{
+  "country_code": "MX",
+  "country_name": "México",
+  "currency": "MXN",
+  "iva_rates": {
+    "standard": 0.16,
+    "reduced": 0.08,
+    "exempt": 0.0,
+    "excluded": 0.0
+  },
+  "retenciones": {
+    "isr": {
+      "natural": 0.10,
+      "juridico": 0.10,
+      "threshold": 2000,
+      "description": "Impuesto Sobre la Renta"
+    },
+    "iva_retenido": {
+      "natural": 0.16,
+      "juridico": 0.16,
+      "threshold": 2000,
+      "description": "IVA Retenido"
+    }
+  },
+  "validation_rules": {
+    "tolerance_percentage": 0.01,
+    "require_rfc_providers": true,
+    "require_rfc_clients": true,
+    "max_amount_without_approval": 2000,
+    "rfc_format_validation": true,
+    "sat_compliance_required": true
+  },
+  "sat_requirements": {
+    "cfdi_required": true,
+    "timbre_fiscal_required": true,
+    "digital_signature_required": true,
+    "xml_validation_required": true
+  },
+  "accounting_accounts": {
+    "iva_por_pagar": 1180001,
+    "iva_por_cobrar": 1180002,
+    "isr_por_pagar": 1180003,
+    "iva_retenido_por_pagar": 1180004
+  },
+  "thresholds": {
+    "high_amount": 100000,
+    "very_high_amount": 500000,
+    "cfdi_mandatory": 2000
+  }
+}

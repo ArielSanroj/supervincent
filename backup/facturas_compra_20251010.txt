@@ -1,0 +1,19 @@
+
+FACTURA DE COMPRA REGISTRADA
+============================
+Fecha: 2025-10-10
+Proveedor: VEGA RODRIGUEZ MARIA CLEMENCIA
+Producto: 52147745 - 1
+Dir: AK 9 117 A 51
+Tel: 3108824736
+facturacion.clemenvega@gmail.com
+Fecha: 10-10-2025 11:35:46
+3182550771337 - ROYAL CANIN GATO
+GASTROINTESTINAL FIBRE x2KG
+Cantidad: 1.0
+Precio Unitario: $203,343.81
+Subtotal: $203,343.81
+Impuestos: $10,167.19
+Total: $213,511.00
+Registrado: 2025-10-10 18:19:28
+============================
