@@ -1,15 +1,15 @@
-# 🧾 Sistema Fiscal/Impuestos de Mommyshops
+# 🧾 Sistema Fiscal/Impuestos de SuperBincent
 
 ## 📋 Descripción General
 
-Mommyshops cuenta con un **sistema fiscal integral** diseñado específicamente para el mercado colombiano, que automatiza el cálculo, validación y reporte de todos los impuestos aplicables según la normativa DIAN 2025. El sistema está construido con arquitectura modular y es completamente compatible con la API de Alegra.
+SuperBincent cuenta con un **sistema fiscal integral** diseñado específicamente para el mercado colombiano, que automatiza el cálculo, validación y reporte de todos los impuestos aplicables según la normativa DIAN 2025. El sistema está construido con arquitectura modular y es completamente compatible con la API de Alegra.
 
 ## 🏗️ Arquitectura del Sistema
 
 ### 🔧 **Componentes Principales**
 
 ```
-📁 Sistema Fiscal Mommyshops
+📁 Sistema Fiscal SuperBincent
 ├── 🧮 tax_calculator.py          # Motor principal de cálculos
 ├── 📊 tax_validator.py           # Validación y compliance
 ├── 🤖 tax_nanobot_integration.py # IA para casos ambiguos
@@ -298,6 +298,6 @@ INFO: invoice_processor: 📊 RESUMEN FISCAL - Estado: COMPLIANT
 
 ## 🎯 Conclusión
 
-El **Sistema Fiscal/Impuestos de Mommyshops** es una solución integral que automatiza completamente el manejo de impuestos colombianos, garantizando compliance normativo, precisión en cálculos y integración perfecta con sistemas contables. Su arquitectura modular y capacidades de IA lo convierten en una herramienta poderosa para el manejo fiscal empresarial.
+El **Sistema Fiscal/Impuestos de SuperBincent** es una solución integral que automatiza completamente el manejo de impuestos colombianos, garantizando compliance normativo, precisión en cálculos y integración perfecta con sistemas contables. Su arquitectura modular y capacidades de IA lo convierten en una herramienta poderosa para el manejo fiscal empresarial.
 
 **🏆 ¡Sistema validado y listo para producción! 🏆**
