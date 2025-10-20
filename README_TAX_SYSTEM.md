@@ -1,4 +1,4 @@
-# 🧾 Sistema de Impuestos Colombianos 2025
+# 🧾 Sistema de Impuestos Colombianos 2025 - SuperBincent
 
 Sistema completo de cálculo de impuestos para Colombia basado en la normativa DIAN 2025 y la Reforma Tributaria 2022/2023.
 
