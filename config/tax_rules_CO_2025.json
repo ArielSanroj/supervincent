@@ -1,0 +1,182 @@
+{
+  "version": "2025.1",
+  "uvt_2025": 49799,
+  "currency": "COP",
+  "country": "Colombia",
+  "last_updated": "2025-01-01",
+  
+  "regimes": {
+    "comun": {
+      "name": "Régimen Común",
+      "iva_applies": true,
+      "retefuente_applies": true,
+      "declaration_required": true
+    },
+    "simplificado": {
+      "name": "Régimen Simplificado",
+      "iva_applies": false,
+      "retefuente_applies": false,
+      "declaration_required": false
+    }
+  },
+
+  "iva_rates": {
+    "general": 0.19,
+    "reducida": 0.05,
+    "exento": 0.00,
+    "excluido": null
+  },
+
+  "iva_categories": {
+    "pet_food": {
+      "rate": 0.05,
+      "description": "Alimentos para mascotas",
+      "dian_code": "2208.90.20.00"
+    },
+    "basic_food": {
+      "rate": 0.00,
+      "description": "Alimentos básicos de la canasta familiar",
+      "dian_code": "varios"
+    },
+    "electronics": {
+      "rate": 0.19,
+      "description": "Electrónicos y tecnología",
+      "dian_code": "8517.12.00.00"
+    },
+    "clothing": {
+      "rate": 0.19,
+      "description": "Ropa y calzado",
+      "dian_code": "6203.42.00.00"
+    },
+    "vehicles_electric": {
+      "rate": 0.05,
+      "description": "Vehículos eléctricos",
+      "dian_code": "8703.90.00.00"
+    },
+    "general": {
+      "rate": 0.19,
+      "description": "Bienes y servicios generales",
+      "dian_code": "otros"
+    }
+  },
+
+  "retefuente_renta": {
+    "thresholds": {
+      "honorarios": {
+        "uvt_min": 2,
+        "uvt_max": 27,
+        "rate_low": 0.10,
+        "rate_high": 0.11,
+        "description": "Honorarios y comisiones profesionales"
+      },
+      "arrendamientos": {
+        "uvt_min": 2,
+        "rate": 0.035,
+        "description": "Arrendamientos de inmuebles"
+      },
+      "compras_bienes": {
+        "uvt_min": 27,
+        "rate_no_declarante": 0.035,
+        "rate_declarante": 0.025,
+        "description": "Compras de bienes"
+      },
+      "servicios_generales": {
+        "uvt_min": 4,
+        "rate": 0.04,
+        "description": "Servicios generales"
+      }
+    }
+  },
+
+  "retefuente_iva": {
+    "threshold_uvt": 10,
+    "rates": {
+      "comun": 0.15,
+      "gran_contribuyente": 0.50
+    },
+    "description": "Retención en la fuente por IVA"
+  },
+
+  "retefuente_ica": {
+    "cities": {
+      "bogota": {
+        "threshold_uvt": 5,
+        "rates": {
+          "comercio": 0.00414,
+          "industria": 0.01104,
+          "servicios": 0.00690
+        }
+      },
+      "medellin": {
+        "threshold_uvt": 5,
+        "rates": {
+          "comercio": 0.00350,
+          "industria": 0.00950,
+          "servicios": 0.00580
+        }
+      },
+      "cali": {
+        "threshold_uvt": 5,
+        "rates": {
+          "comercio": 0.00380,
+          "industria": 0.01020,
+          "servicios": 0.00620
+        }
+      },
+      "barranquilla": {
+        "threshold_uvt": 5,
+        "rates": {
+          "comercio": 0.00320,
+          "industria": 0.00850,
+          "servicios": 0.00520
+        }
+      }
+    }
+  },
+
+  "renta_rates": {
+    "personas_naturales": {
+      "brackets": [
+        {"min_uvt": 0, "max_uvt": 1090, "rate": 0.00},
+        {"min_uvt": 1090, "max_uvt": 1700, "rate": 0.19},
+        {"min_uvt": 1700, "max_uvt": 4100, "rate": 0.28},
+        {"min_uvt": 4100, "max_uvt": 6000, "rate": 0.33},
+        {"min_uvt": 6000, "max_uvt": null, "rate": 0.39}
+      ],
+      "declaration_threshold_income": 47,
+      "declaration_threshold_assets": 171,
+      "declaration_threshold_consumption": 47
+    },
+    "personas_juridicas": {
+      "general_rate": 0.35,
+      "special_rates": {
+        "hoteles": 0.20,
+        "editoriales": 0.30
+      },
+      "minimum_tax_threshold": 5000
+    }
+  },
+
+  "validation_rules": {
+    "tolerance_amount": 1.0,
+    "required_fields": ["base", "total", "iva_amount", "iva_rate"],
+    "cufe_validation": true,
+    "dian_api_validation": true
+  },
+
+  "reporting": {
+    "retefuente_forms": {
+      "350": "Retención en la fuente",
+      "frequency": "mensual"
+    },
+    "iva_forms": {
+      "frequency": "bimestral",
+      "threshold_monthly": 92000
+    },
+    "renta_forms": {
+      "210": "Personas naturales",
+      "110": "Personas jurídicas",
+      "frequency": "anual"
+    }
+  }
+}
