@@ -1,0 +1,40 @@
+{
+  "tax_rates": {
+    "iva_standard": 0.19,
+    "iva_reduced": 0.05,
+    "iva_exempt": 0.0,
+    "rete_ica": 0.01,
+    "rete_iva": 0.035,
+    "rete_fuente": 0.025
+  },
+  "tax_categories": {
+    "standard": {
+      "iva_rate": 0.19,
+      "description": "Bienes y servicios estándar"
+    },
+    "reduced": {
+      "iva_rate": 0.05,
+      "description": "Bienes de primera necesidad"
+    },
+    "exempt": {
+      "iva_rate": 0.0,
+      "description": "Bienes exentos de IVA"
+    },
+    "excluded": {
+      "iva_rate": 0.0,
+      "description": "Bienes excluidos del IVA"
+    }
+  },
+  "validation_rules": {
+    "max_amount_without_approval": 1000000,
+    "require_nit_for_providers": true,
+    "require_cc_for_clients": true,
+    "duplicate_check_days": 30,
+    "tax_tolerance_percentage": 0.01
+  },
+  "retention_rules": {
+    "rete_iva_threshold": 1000000,
+    "rete_fuente_threshold": 1000000,
+    "rete_ica_threshold": 1000000
+  }
+}

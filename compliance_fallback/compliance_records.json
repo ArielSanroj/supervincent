@@ -1,0 +1,14 @@
+{
+  "test_invoice_002": {
+    "invoice_id": "test_invoice_002",
+    "file_path": "/test/path/invoice2.pdf",
+    "status": "failed",
+    "dian_response": null,
+    "error_message": "Falló después de 3 reintentos",
+    "retry_count": 0,
+    "max_retries": 3,
+    "created_at": "2025-10-18T04:00:40.601319",
+    "updated_at": "2025-10-18T04:00:40.601563",
+    "next_retry_at": null
+  }
+}

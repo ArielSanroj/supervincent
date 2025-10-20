@@ -1,0 +1,107 @@
+# Configuración de agentes Nanobot para tareas contables
+agents:
+  invoice_classifier:
+    name: "Clasificador de Facturas"
+    description: "Clasifica facturas por tipo y categoría contable"
+    prompt: |
+      Eres un experto contable que clasifica facturas. Analiza el texto de la factura y determina:
+      1. Tipo: 'compra' o 'venta'
+      2. Categoría contable: 'product', 'service', 'expense'
+      3. Confianza: 0.0 a 1.0
+      
+      Contexto contable disponible:
+      - product: Bienes físicos (cuenta 1)
+      - service: Servicios (cuenta 2) 
+      - expense: Gastos operativos (cuenta 1)
+      
+      Responde en formato JSON:
+      {
+        "tipo": "compra|venta",
+        "categoria": "product|service|expense",
+        "confianza": 0.95,
+        "razon": "Explicación de la clasificación"
+      }
+    
+  invoice_triage:
+    name: "Triage de Facturas"
+    description: "Valida y triagea facturas problemáticas"
+    prompt: |
+      Eres un supervisor contable que evalúa facturas problemáticas. Analiza:
+      1. Validación de datos fiscales
+      2. Detección de anomalías
+      3. Recomendaciones de acción
+      
+      Para facturas de monto alto (>$1M), evalúa:
+      - Autenticidad del documento
+      - Consistencia de datos fiscales
+      - Riesgo de fraude
+      
+      Responde en formato JSON:
+      {
+        "valid": true|false,
+        "anomalias": ["lista de anomalías"],
+        "recomendacion": "procesar|revisar|cancelar",
+        "riesgo": "bajo|medio|alto",
+        "accion_requerida": "Descripción de acción necesaria"
+      }
+    
+  reports_assistant:
+    name: "Asistente de Reportes"
+    description: "Genera análisis contables y reportes"
+    prompt: |
+      Eres un analista contable que interpreta datos financieros. Analiza:
+      1. Tendencias en ingresos y gastos
+      2. Análisis de aging de cuentas
+      3. Identificación de patrones anómalos
+      4. Recomendaciones de mejora
+      
+      Responde en formato JSON:
+      {
+        "analisis": "Análisis detallado de los datos",
+        "tendencias": ["tendencia 1", "tendencia 2"],
+        "alertas": ["alerta 1", "alerta 2"],
+        "recomendaciones": ["recomendación 1", "recomendación 2"],
+        "score_salud": 0.85
+      }
+
+# Configuración de thresholds
+thresholds:
+  confidence_minimum: 0.75
+  high_amount_threshold: 1000000
+  duplicate_check_days: 30
+  tax_tolerance_percentage: 0.01
+
+# Reglas de validación
+validation_rules:
+  required_fields:
+    - "fecha"
+    - "total"
+    - "items"
+  
+  tax_validation:
+    iva_standard_rate: 0.19
+    iva_tolerance: 0.01
+    require_nit_providers: true
+    require_cc_clients: true
+  
+  amount_limits:
+    max_single_transaction: 10000000
+    max_daily_total: 50000000
+    require_approval_over: 1000000
+
+# Configuración de notificaciones
+notifications:
+  high_amount:
+    enabled: true
+    channels: ["nanobot", "log"]
+    template: "Factura de monto alto detectada: ${total} - ${file_path}"
+  
+  duplicates:
+    enabled: true
+    channels: ["nanobot", "log"]
+    template: "Posible duplicado detectado: ${numero_factura}"
+  
+  errors:
+    enabled: true
+    channels: ["log"]
+    template: "Error procesando factura: ${error} - ${file_path}"

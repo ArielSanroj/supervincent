@@ -1,0 +1,15 @@
+{
+  "report_type": "cash_flow",
+  "period": {
+    "start": "2024-01-01",
+    "end": "2024-01-31"
+  },
+  "generated_at": "2025-10-18T03:33:55.107372",
+  "data": {
+    "total_income": 0,
+    "total_expenses": 0,
+    "net_cash_flow": 0,
+    "income_count": 0,
+    "expense_count": 0
+  }
+}

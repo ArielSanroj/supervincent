@@ -1,0 +1,13 @@
+{
+  "invoice_id": "test_invoice_002",
+  "invoice_data": {
+    "nit_emisor": "900123456-1",
+    "nit_receptor": "800987654-3",
+    "fecha": "2024-01-15",
+    "numero_factura": "FAC-002",
+    "total": 2000000.0,
+    "iva": 380000.0
+  },
+  "backup_created": "2025-10-18T04:00:40.601438",
+  "compliance_status": "pending"
+}

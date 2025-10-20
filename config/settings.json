@@ -1,0 +1,38 @@
+{
+  "alegra": {
+    "base_url": "https://api.alegra.com/api/v1",
+    "timeout": 30,
+    "max_retries": 3,
+    "rate_limit_delay": 1
+  },
+  "parsing": {
+    "keywords_compra": ["proveedor", "compra", "bill", "invoice", "factura de compra"],
+    "keywords_venta": ["cliente", "venta", "sale", "factura de venta"],
+    "date_formats": ["%d-%m-%Y", "%Y-%m-%d", "%d/%m/%Y"],
+    "currency_symbols": ["$", "€", "£", "¥"]
+  },
+  "reports": {
+    "default_period_days": 30,
+    "output_format": "json",
+    "include_breakdown": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/invoicebot.log",
+    "max_size_mb": 10,
+    "backup_count": 5
+  },
+  "backup": {
+    "enabled": true,
+    "local_files": true,
+    "retention_days": 90
+  },
+  "nanobot": {
+    "enabled": false,
+    "host": "http://localhost:8080",
+    "classifier_agent": "invoice_classifier",
+    "triage_agent": "invoice_triage",
+    "confidence_threshold": 0.75,
+    "triage_on_api_error": true
+  }
+}
