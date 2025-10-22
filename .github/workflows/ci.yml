@@ -120,7 +120,7 @@ jobs:
         run: safety check --json --output safety-report.json
 
       - name: Subir reportes de seguridad
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-reports
           path: |
