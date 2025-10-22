@@ -1,6 +1,6 @@
 # Dockerfile multi-stage optimizado para BetiBot
 # Etapa 1: Builder para dependencias y compilación
-FROM python:3.11-slim as builder
+FROM python:3.14-slim as builder
 
 # Variables de entorno para Python
 ENV PYTHONUNBUFFERED=1 \
@@ -44,7 +44,7 @@ RUN pip install --upgrade pip && \
     pip install -r requirements_performance.txt
 
 # Etapa 2: Runtime optimizado
-FROM python:3.11-slim as runtime
+FROM python:3.14-slim as runtime
 
 # Variables de entorno
 ENV PYTHONUNBUFFERED=1 \
