@@ -1,0 +1,14 @@
+# Configuración de dashboards para Grafana
+apiVersion: 1
+
+providers:
+  - name: 'BetiBot Dashboards'
+    orgId: 1
+    folder: 'BetiBot'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards
+

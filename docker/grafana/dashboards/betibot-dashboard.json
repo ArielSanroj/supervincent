@@ -1,0 +1,131 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "BetiBot InvoiceBot Dashboard",
+    "tags": ["betibot", "invoice", "processing"],
+    "style": "dark",
+    "timezone": "America/Bogota",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Facturas Procesadas",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(rate(betibot_invoices_processed_total[5m]))",
+            "legendFormat": "Facturas/min"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 1},
+                {"color": "green", "value": 5}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Tiempo de Procesamiento",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(betibot_processing_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(betibot_processing_duration_seconds_bucket[5m]))",
+            "legendFormat": "50th percentile"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Errores por Módulo",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum(rate(betibot_errors_total[5m])) by (module)",
+            "legendFormat": "{{module}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Latencia de APIs",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(betibot_api_latency_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 16, "x": 8, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Tareas Activas de Celery",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(betibot_active_tasks)",
+            "legendFormat": "Tareas activas"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 16}
+      },
+      {
+        "id": 6,
+        "title": "Tamaño de Caché",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(betibot_cache_size)",
+            "legendFormat": "Elementos en caché"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Tamaño de Colas",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(betibot_queue_size)",
+            "legendFormat": "Elementos en cola"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Requests a APIs Externas",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "sum(rate(betibot_api_requests_total[5m])) by (service)",
+            "legendFormat": "{{service}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 20}
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "30s"
+  }
+}
+

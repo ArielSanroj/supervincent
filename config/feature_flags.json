@@ -1,0 +1,137 @@
+{
+  "features": {
+    "nanobot_integration": {
+      "status": "experimental",
+      "description": "Integración con Nanobot para clasificación inteligente",
+      "experimental": true,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "nanobot_url": "http://localhost:8000",
+        "timeout": 30,
+        "retry_attempts": 3,
+        "enabled": false
+      }
+    },
+    "dian_validation": {
+      "status": "beta",
+      "description": "Validación de facturas electrónicas con DIAN",
+      "experimental": false,
+      "beta": true,
+      "deprecated": false,
+      "config": {
+        "dian_url": "https://catalogo-vpfe.dian.gov.co",
+        "timeout": 60,
+        "retry_attempts": 3,
+        "enabled": false
+      }
+    },
+    "superbincent_integration": {
+      "status": "experimental",
+      "description": "Integración con SuperBincent para procesamiento avanzado",
+      "experimental": true,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "superbincent_url": "http://localhost:9000",
+        "timeout": 45,
+        "retry_attempts": 2,
+        "enabled": false
+      }
+    },
+    "advanced_ocr": {
+      "status": "enabled",
+      "description": "OCR avanzado con preprocesamiento de imágenes",
+      "experimental": false,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "preprocessing": true,
+        "language": "spa",
+        "psm": 6,
+        "oem": 3,
+        "enabled": true
+      }
+    },
+    "tax_calculation": {
+      "status": "enabled",
+      "description": "Cálculo automático de impuestos colombianos",
+      "experimental": false,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "rules_file": "config/tax_rules_CO_2025.json",
+        "uvt_value": 50000,
+        "enabled": true
+      }
+    },
+    "alegra_reports": {
+      "status": "enabled",
+      "description": "Generación de reportes contables desde Alegra",
+      "experimental": false,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "output_dir": "reports",
+        "formats": ["json", "csv", "excel"],
+        "enabled": true
+      }
+    },
+    "celery_async": {
+      "status": "beta",
+      "description": "Procesamiento asíncrono con Celery",
+      "experimental": false,
+      "beta": true,
+      "deprecated": false,
+      "config": {
+        "broker_url": "redis://localhost:6379/0",
+        "result_backend": "redis://localhost:6379/0",
+        "task_serializer": "json",
+        "result_serializer": "json",
+        "accept_content": ["json"],
+        "timezone": "America/Bogota",
+        "enabled": false
+      }
+    },
+    "redis_cache": {
+      "status": "beta",
+      "description": "Caché Redis para optimización de performance",
+      "experimental": false,
+      "beta": true,
+      "deprecated": false,
+      "config": {
+        "host": "localhost",
+        "port": 6379,
+        "db": 0,
+        "password": null,
+        "ttl": 3600,
+        "enabled": false
+      }
+    },
+    "prometheus_metrics": {
+      "status": "experimental",
+      "description": "Métricas de Prometheus para monitoring",
+      "experimental": true,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "port": 8000,
+        "path": "/metrics",
+        "enabled": false
+      }
+    },
+    "health_checks": {
+      "status": "enabled",
+      "description": "Health checks para monitoreo de servicios",
+      "experimental": false,
+      "beta": false,
+      "deprecated": false,
+      "config": {
+        "port": 8080,
+        "path": "/health",
+        "enabled": true
+      }
+    }
+  }
+}
+

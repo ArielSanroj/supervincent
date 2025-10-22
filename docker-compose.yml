@@ -1,0 +1,180 @@
+# Docker Compose para desarrollo
+version: '3.8'
+
+services:
+  # Aplicación principal
+  betibot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: betibot-app
+    environment:
+      - PYTHONPATH=/app/src
+      - ALEGRA_EMAIL=${ALEGRA_EMAIL}
+      - ALEGRA_TOKEN=${ALEGRA_TOKEN}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./facturas:/app/facturas
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    ports:
+      - "8000:8000"  # Métricas Prometheus
+      - "8080:8080"  # Health check
+    depends_on:
+      - redis
+      - celery
+    networks:
+      - betibot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Celery worker
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: betibot-celery
+    command: celery -A src.tasks.celery_tasks worker --loglevel=info --concurrency=2
+    environment:
+      - PYTHONPATH=/app/src
+      - ALEGRA_EMAIL=${ALEGRA_EMAIL}
+      - ALEGRA_TOKEN=${ALEGRA_TOKEN}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./facturas:/app/facturas
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    depends_on:
+      - redis
+    networks:
+      - betibot-network
+    restart: unless-stopped
+
+  # Celery beat (scheduler)
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: betibot-celery-beat
+    command: celery -A src.tasks.celery_tasks beat --loglevel=info
+    environment:
+      - PYTHONPATH=/app/src
+      - ALEGRA_EMAIL=${ALEGRA_EMAIL}
+      - ALEGRA_TOKEN=${ALEGRA_TOKEN}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./logs:/app/logs
+      - ./.env:/app/.env
+    depends_on:
+      - redis
+    networks:
+      - betibot-network
+    restart: unless-stopped
+
+  # Redis para Celery y caché
+  redis:
+    image: redis:7-alpine
+    container_name: betibot-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - betibot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Flower para monitoreo de Celery
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: betibot-flower
+    command: celery -A src.tasks.celery_tasks flower --port=5555
+    environment:
+      - PYTHONPATH=/app/src
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    networks:
+      - betibot-network
+    restart: unless-stopped
+
+  # Prometheus para métricas
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: betibot-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - betibot-network
+    restart: unless-stopped
+
+  # Grafana para dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: betibot-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - betibot-network
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  betibot-network:
+    driver: bridge
+
