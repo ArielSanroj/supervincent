@@ -6,32 +6,34 @@ Modelos Pydantic para validación de datos de Alegra
 from typing import Optional, List, Dict, Any, Union
 from decimal import Decimal
 from datetime import datetime
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 class ContactData(BaseModel):
     """Modelo para datos de contacto en Alegra"""
     name: str = Field(..., min_length=1, max_length=255, description="Nombre del contacto")
-    type: str = Field(..., regex="^(client|provider)$", description="Tipo de contacto")
+    type: str = Field(..., pattern="^(client|provider)$", description="Tipo de contacto")
     identification: Optional[str] = Field(None, max_length=20, description="Identificación fiscal")
-    email: Optional[str] = Field(None, regex=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", description="Email del contacto")
+    email: Optional[str] = Field(None, pattern=r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", description="Email del contacto")
     phone: Optional[str] = Field(None, max_length=20, description="Teléfono del contacto")
     address: Optional[str] = Field(None, max_length=500, description="Dirección del contacto")
     observations: Optional[str] = Field(None, max_length=1000, description="Observaciones")
     
-    @validator('name')
+    @field_validator('name')
+    @classmethod
     def validate_name(cls, v):
         if not v or not v.strip():
             raise ValueError('El nombre no puede estar vacío')
         return v.strip()
     
-    @validator('identification')
+    @field_validator('identification')
+    @classmethod
     def validate_identification(cls, v):
         if v and not v.isdigit():
             raise ValueError('La identificación debe contener solo números')
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Cliente Ejemplo",
                 "type": "client",
@@ -52,20 +54,22 @@ class ItemData(BaseModel):
     accounting_account: str = Field("4-01-01-01-01", max_length=20, description="Cuenta contable")
     observations: Optional[str] = Field(None, max_length=1000, description="Observaciones")
     
-    @validator('name')
+    @field_validator('name')
+    @classmethod
     def validate_name(cls, v):
         if not v or not v.strip():
             raise ValueError('El nombre no puede estar vacío')
         return v.strip()
     
-    @validator('price')
+    @field_validator('price')
+    @classmethod
     def validate_price(cls, v):
         if v <= 0:
             raise ValueError('El precio debe ser mayor a 0')
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Producto Ejemplo",
                 "price": 10000.50,
@@ -84,14 +88,15 @@ class TaxData(BaseModel):
     rete_fuente_ica: Decimal = Field(0.0, ge=0, le=1, description="Retención en la fuente - ICA")
     rete_iva: Decimal = Field(0.0, ge=0, le=1, description="Retención de IVA")
     
-    @validator('iva_rate', 'rete_fuente_renta', 'rete_fuente_iva', 'rete_fuente_ica', 'rete_iva')
+    @field_validator('iva_rate', 'rete_fuente_renta', 'rete_fuente_iva', 'rete_fuente_ica', 'rete_iva')
+    @classmethod
     def validate_tax_rates(cls, v):
         if v < 0 or v > 1:
             raise ValueError('Las tasas de impuestos deben estar entre 0 y 1')
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "iva_rate": 0.19,
                 "rete_fuente_renta": 0.0,
@@ -110,7 +115,8 @@ class InvoiceItemData(BaseModel):
     discount: Decimal = Field(0.0, ge=0, le=1, description="Descuento (0-1)")
     tax: TaxData = Field(default_factory=TaxData, description="Datos de impuestos")
     
-    @validator('name')
+    @field_validator('name')
+    @classmethod
     def validate_name(cls, v):
         if not v or not v.strip():
             raise ValueError('El nombre no puede estar vacío')
@@ -142,7 +148,7 @@ class InvoiceItemData(BaseModel):
         return self.net_amount + self.iva_amount
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Producto Ejemplo",
                 "price": 10000.50,
@@ -168,17 +174,18 @@ class InvoiceData(BaseModel):
     payment_method: str = Field("cash", max_length=50, description="Método de pago")
     payment_form: str = Field("immediate", max_length=50, description="Forma de pago")
     
-    @validator('items')
+    @field_validator('items')
+    @classmethod
     def validate_items(cls, v):
         if not v:
             raise ValueError('La factura debe tener al menos un item')
         return v
     
-    @validator('due_date')
-    def validate_due_date(cls, v, values):
-        if v and 'date' in values and v < values['date']:
+    @model_validator(mode='after')
+    def validate_due_date(self):
+        if self.due_date and self.date and self.due_date < self.date:
             raise ValueError('La fecha de vencimiento no puede ser anterior a la fecha de la factura')
-        return v
+        return self
     
     @property
     def subtotal(self) -> Decimal:
@@ -196,7 +203,7 @@ class InvoiceData(BaseModel):
         return self.subtotal + self.total_iva
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "client_id": "123",
                 "date": "2025-01-10T10:00:00Z",
@@ -232,17 +239,18 @@ class BillData(BaseModel):
     payment_method: str = Field("cash", max_length=50, description="Método de pago")
     payment_form: str = Field("immediate", max_length=50, description="Forma de pago")
     
-    @validator('items')
+    @field_validator('items')
+    @classmethod
     def validate_items(cls, v):
         if not v:
             raise ValueError('La bill debe tener al menos un item')
         return v
     
-    @validator('due_date')
-    def validate_due_date(cls, v, values):
-        if v and 'date' in values and v < values['date']:
+    @model_validator(mode='after')
+    def validate_due_date(self):
+        if self.due_date and self.date and self.due_date < self.date:
             raise ValueError('La fecha de vencimiento no puede ser anterior a la fecha de la bill')
-        return v
+        return self
     
     @property
     def subtotal(self) -> Decimal:
@@ -260,7 +268,7 @@ class BillData(BaseModel):
         return self.subtotal + self.total_iva
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "provider_id": "456",
                 "date": "2025-01-10T10:00:00Z",
@@ -294,7 +302,7 @@ class AlegraResponse(BaseModel):
     errors: Optional[List[str]] = Field(None, description="Lista de errores")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "success": True,
                 "data": {"id": "123", "name": "Cliente Ejemplo"},
@@ -315,7 +323,7 @@ class CompanyInfo(BaseModel):
     timezone: str = Field("America/Bogota", description="Zona horaria")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "1",
                 "name": "Mi Empresa S.A.S",

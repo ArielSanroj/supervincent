@@ -129,7 +129,7 @@ class InvoiceProcessor:
         
         self.logger.info("Procesador inicializado", extra={
             "nanobot_enabled": self.nanobot_enabled,
-            "alegra_configured": bool(self.alegra_client.email and self.alegra_client.token)
+            "alegra_configured": bool(self.alegra_client.config.email and self.alegra_client.config.token)
         })
     
     def _ensure_directories(self) -> None:
