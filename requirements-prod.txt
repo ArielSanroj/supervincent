@@ -1,0 +1,18 @@
+# Production dependencies
+-r requirements.txt
+
+# Production server
+gunicorn==21.2.0
+uvicorn==0.24.0
+
+# Monitoring
+prometheus-client==0.19.0
+sentry-sdk==1.38.0
+
+# Security
+cryptography==41.0.8
+bcrypt==4.1.2
+
+# Performance
+redis==5.0.1
+celery==5.3.4

@@ -1,8 +1,42 @@
-# InvoiceBot - Bot Contable Inteligente
+# SuperVincent InvoiceBot - Intelligent Invoice Processing System
 
-## 🚀 Descripción
+## 🚀 Overview
 
-InvoiceBot es un sistema inteligente de procesamiento de facturas que evoluciona de un simple procesador de PDFs a un **bot contable completo** con integración total a Alegra. El sistema detecta automáticamente el tipo de factura (compra/venta), extrae datos con alta precisión, y organiza todo en libros mayores y menores a través de la API de Alegra.
+SuperVincent InvoiceBot is a modern, intelligent invoice processing system that automatically detects invoice types (purchase/sale), extracts data with high precision, and integrates seamlessly with Alegra accounting software. Built with modern Python architecture, it supports PDF and image processing with OCR, Colombian tax calculations, and automated accounting workflows.
+
+## ✨ Key Features
+
+### 🔍 Intelligent Processing
+- **Automatic Detection**: Smart invoice type detection (purchase vs sale)
+- **Multi-format Support**: PDF, JPG, PNG with advanced OCR
+- **Robust Parsing**: Multiple regex patterns for maximum compatibility
+- **Precise Extraction**: Dates, totals, taxes, and product details
+
+### 📊 Complete Accounting Integration
+- **Purchase Bills**: Creates bills in Alegra automatically
+- **Sale Invoices**: Creates invoices in Alegra for customer billing
+- **Contact Management**: Auto-creates suppliers and customers
+- **Item Management**: Dynamic product/service creation
+- **Tax Integration**: Colombian tax calculations (IVA, ReteFuente, ICA)
+
+### 📈 Financial Reporting
+- **General Ledger**: Complete account reports
+- **Trial Balance**: Accounting verification
+- **Journal Entries**: Chronological transaction records
+- **Auxiliary Ledgers**: Supplier/customer specific reports
+
+### 🤖 Automation & Monitoring
+- **Real-time Processing**: Automatic PDF and image processing
+- **Intelligent Classification**: File organization by type and date
+- **Automatic Backup**: Local transaction logging
+- **Error Recovery**: Robust error handling system
+- **OCR Intelligence**: Advanced image preprocessing for better text extraction
+
+### 🔒 Security & Compliance
+- **Configuration Validation**: Automatic security verification
+- **NIIF Compliance**: Ready for accounting standards
+- **Comprehensive Logging**: Detailed audit trails
+- **Secure Credentials**: Environment variable protection
 
 ## ✨ Características Principales
 

@@ -1,0 +1,19 @@
+FACTURA ELECTRÓNICA DE VENTA #12345
+Fecha: 15-03-2024
+Proveedor: Test Supplier S.A.S.
+NIT: 12345678-9
+Dirección: Calle 123 #45-67, Bogotá
+
+Cliente: Test Customer Ltda.
+NIT: 87654321-1
+Dirección: Carrera 78 #90-12, Medellín
+
+Descripción: Royal Canin Gato Gastrointestinal Fibre x2KG
+Código: 001
+Cantidad: 2 Unidad
+Precio unit.: $203,343.81
+Subtotal: $406,687.62
+IVA (5%): $20,334.38
+Total: $427,022.00
+
+Observaciones: Factura procesada automáticamente
