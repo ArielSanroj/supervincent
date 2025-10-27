@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  invoicebot:
+    build: .
+    container_name: supervincent-invoicebot
+    ports:
+      - "8000:8000"
+    environment:
+      - ALEGRA_USER=${ALEGRA_USER}
+      - ALEGRA_TOKEN=${ALEGRA_TOKEN}
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./backup:/app/backup
+      - ./facturas:/app/facturas
+    depends_on:
+      - redis
+      - celery
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: supervincent-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  celery:
+    build: .
+    container_name: supervincent-celery
+    command: celery -A tasks worker --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - ALEGRA_USER=${ALEGRA_USER}
+      - ALEGRA_TOKEN=${ALEGRA_TOKEN}
+    volumes:
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./backup:/app/backup
+      - ./facturas:/app/facturas
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  celery-beat:
+    build: .
+    container_name: supervincent-celery-beat
+    command: celery -A tasks beat --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  redis_data:

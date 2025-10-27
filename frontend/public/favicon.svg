@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .b { fill: #633C88; }
+      .dot { fill: #9966BB; }
+      .line { fill: none; stroke: #633C88; stroke-width: 3; stroke-linecap: round; }
+      .plane { fill: #633C88; }
+    </style>
+  </defs>
+  <rect width="100" height="100" fill="#F5F5F5"/>
+  <path class="b" d="M25 20h30c8 0 15 7 15 15v30c0 8-7 15-15 15H25c-8 0-15-7-15-15V35c0-8 7-15 15-15zm0 5c-5 0-10 5-10 10v30c0 5 5 10 10 10h30c5 0 10-5 10-10V35c0-5-5-10-10-10H25z"/>
+  <circle class="dot" cx="45" cy="30" r="3"/>
+  <path class="line" d="M20 65 Q35 75 50 70 Q65 65 75 60"/>
+  <path class="plane" d="M75 60l8-3l-2 2l2 2l-8-1z"/>
+</svg>
