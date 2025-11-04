@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     
     # Tax calculation settings
     tax_config_path: str = Field("config/tax_rules_CO_2025.json", env="TAX_CONFIG_PATH")
+
+    # Ollama settings
+    ollama_enabled: bool = Field(False, env="OLLAMA_ENABLED")
+    ollama_base_url: str = Field("http://localhost:11434", env="OLLAMA_BASE_URL")
+    ollama_text_model: str = Field("llama3.1:latest", env="OLLAMA_TEXT_MODEL")
+    ollama_vision_model: str = Field("llava:latest", env="OLLAMA_VISION_MODEL")
     
     class Config:
         env_file = ".env"

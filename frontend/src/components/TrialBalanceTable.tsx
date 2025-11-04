@@ -16,8 +16,8 @@ const TrialBalanceTable: React.FC<TrialBalanceTableProps> = ({ accounts, isLoadi
     }).format(amount);
   };
 
-  const totalDebit = accounts.reduce((sum, account) => sum + account.total_debit, 0);
-  const totalCredit = accounts.reduce((sum, account) => sum + account.total_credit, 0);
+  const totalDebit = accounts.reduce((sum, account: any) => sum + (Number(account.total_debit) || 0), 0);
+  const totalCredit = accounts.reduce((sum, account: any) => sum + (Number(account.total_credit) || 0), 0);
 
   if (isLoading) {
     return (
@@ -65,28 +65,35 @@ const TrialBalanceTable: React.FC<TrialBalanceTableProps> = ({ accounts, isLoadi
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {accounts.map((account, index) => (
+            {accounts.map((account: any, index) => {
+              const debitBalance = Number(account.debit_balance) || 0;
+              const creditBalance = Number(account.credit_balance) || 0;
+              const totalDebitAcc = Number(account.total_debit) || 0;
+              const totalCreditAcc = Number(account.total_credit) || 0;
+              const accountCode = account.account_code || '-';
+              const accountName = account.account_name || '-';
+              return (
               <tr key={account.account_code} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                  {account.account_code}
+                  {accountCode}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-900">
-                  {account.account_name}
+                  {accountName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {account.debit_balance > 0 ? formatCurrency(account.debit_balance) : '-'}
+                  {debitBalance > 0 ? formatCurrency(debitBalance) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {account.credit_balance > 0 ? formatCurrency(account.credit_balance) : '-'}
+                  {creditBalance > 0 ? formatCurrency(creditBalance) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {account.total_debit > 0 ? formatCurrency(account.total_debit) : '-'}
+                  {totalDebitAcc > 0 ? formatCurrency(totalDebitAcc) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {account.total_credit > 0 ? formatCurrency(account.total_credit) : '-'}
+                  {totalCreditAcc > 0 ? formatCurrency(totalCreditAcc) : '-'}
                 </td>
               </tr>
-            ))}
+            );})}
           </tbody>
           <tfoot className="bg-gray-100">
             <tr className="font-semibold">
@@ -94,10 +101,10 @@ const TrialBalanceTable: React.FC<TrialBalanceTableProps> = ({ accounts, isLoadi
                 TOTALES
               </td>
               <td className="px-6 py-3 text-sm text-right text-gray-800">
-                {formatCurrency(accounts.reduce((sum, acc) => sum + acc.debit_balance, 0))}
+                {formatCurrency(accounts.reduce((sum, acc: any) => sum + (Number(acc.debit_balance) || 0), 0))}
               </td>
               <td className="px-6 py-3 text-sm text-right text-gray-800">
-                {formatCurrency(accounts.reduce((sum, acc) => sum + acc.credit_balance, 0))}
+                {formatCurrency(accounts.reduce((sum, acc: any) => sum + (Number(acc.credit_balance) || 0), 0))}
               </td>
               <td className="px-6 py-3 text-sm text-right text-gray-800">
                 {formatCurrency(totalDebit)}

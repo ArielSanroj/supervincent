@@ -9,16 +9,16 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50: '#F2ECFF',
+          100: '#E6D9FF',
+          200: '#D1BDFF',
+          300: '#BBA7F5',
+          400: '#8D66E6',
+          500: '#6A38D0',
+          600: '#582DB0',
+          700: '#472690',
+          800: '#35206F',
+          900: '#24164D',
         },
         success: {
           50: '#f0fdf4',
@@ -55,10 +55,17 @@ module.exports = {
           700: '#b91c1c',
           800: '#991b1b',
           900: '#7f1d1d',
+        },
+        brand: {
+          purple: '#6A38D0',
+          lavender: '#BBA7F5',
+          light: '#F7F7F7',
+          dark: '#2C2C2C'
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'Montserrat', 'Inter', 'system-ui', 'sans-serif']
       },
     },
   },

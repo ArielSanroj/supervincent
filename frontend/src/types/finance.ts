@@ -14,9 +14,17 @@ export interface FinancialIndicators {
   availableCash: number | null;
 }
 
+export interface BudgetInvoice {
+  vendor: string;
+  amount: number;
+  date?: string;
+  invoice_id?: string;
+}
+
 export interface BudgetItem {
   label: string;
   amount: number | null;
+  invoices?: BudgetInvoice[];
 }
 
 export interface BreakEvenPoint {

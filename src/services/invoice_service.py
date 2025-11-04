@@ -9,6 +9,8 @@ from typing import Optional
 from ..core.models import InvoiceData, ProcessingResult, InvoiceType
 from ..core.parsers import InvoiceParserFactory
 from .tax_service import TaxService
+from .ollama_service import OllamaService  # optional
+from ..core.config import Settings
 from .alegra_service import AlegraService
 
 logger = logging.getLogger(__name__)
@@ -17,10 +19,12 @@ logger = logging.getLogger(__name__)
 class InvoiceService:
     """Main invoice processing service."""
     
-    def __init__(self, tax_service: TaxService, alegra_service: AlegraService):
+    def __init__(self, tax_service: TaxService, alegra_service: AlegraService, ollama_service: Optional[OllamaService] = None, settings: Optional[Settings] = None):
         """Initialize invoice service with dependencies."""
         self.tax_service = tax_service
         self.alegra_service = alegra_service
+        self.ollama_service = ollama_service
+        self.settings = settings or Settings()
     
     def process_invoice(self, file_path: str) -> ProcessingResult:
         """Process invoice file end-to-end."""
@@ -47,6 +51,28 @@ class InvoiceService:
                     alegra_result=None,
                     error_message="Failed to parse invoice data"
                 )
+            # If totals are zero and Ollama is enabled, try LLM post-processing
+            if (
+                self.settings.ollama_enabled and
+                self.ollama_service is not None and
+                (invoice_data.total == 0.0 or invoice_data.subtotal == 0.0)
+            ):
+                try:
+                    enhanced: Optional[InvoiceData] = None
+                    if invoice_data.raw_text:
+                        enhanced = self.ollama_service.parse_text_to_invoice(invoice_data.raw_text)
+                    else:
+                        # Choose method based on extension
+                        lower = file_path.lower()
+                        if lower.endswith(('.jpg', '.jpeg', '.png')):
+                            enhanced = self.ollama_service.parse_image_to_invoice(file_path)
+                        else:
+                            # For PDFs without raw_text, skip (already extracted text earlier)
+                            pass
+                    if enhanced and (enhanced.total > 0 or enhanced.subtotal > 0):
+                        invoice_data = enhanced
+                except Exception:
+                    pass
             
             # Calculate taxes
             tax_result = self.tax_service.calculate_taxes(invoice_data)
