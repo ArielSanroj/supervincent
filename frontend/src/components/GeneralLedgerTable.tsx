@@ -35,6 +35,13 @@ const GeneralLedgerTable: React.FC<GeneralLedgerTableProps> = ({ entries, isLoad
     );
   }
 
+  // Sort by date descending (present to past)
+  const sortedEntries = [...entries].sort((a: any, b: any) => {
+    const da = new Date(a.date).getTime();
+    const db = new Date(b.date).getTime();
+    return db - da;
+  });
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -69,33 +76,40 @@ const GeneralLedgerTable: React.FC<GeneralLedgerTableProps> = ({ entries, isLoad
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {entries.map((entry) => (
+            {sortedEntries.map((entry) => {
+              const debit = Number((entry as any).debit) || 0;
+              const credit = Number((entry as any).credit) || 0;
+              const balance = Number((entry as any).balance);
+              const safeBalance = Number.isFinite(balance) ? balance : (debit - credit);
+              const accountCode = (entry as any).account_code || '';
+              const accountName = (entry as any).account_name || '';
+              return (
               <tr key={entry.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {formatDate(entry.date)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                  {entry.account_code}
+                  {accountCode || '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {entry.account_name}
+                  {accountName || '-'}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-900">
                   {entry.description}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {entry.debit > 0 ? formatCurrency(entry.debit) : '-'}
+                  {debit > 0 ? formatCurrency(debit) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                  {entry.credit > 0 ? formatCurrency(entry.credit) : '-'}
+                  {credit > 0 ? formatCurrency(credit) : '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium">
-                  <span className={entry.balance >= 0 ? 'text-green-600' : 'text-red-600'}>
-                    {formatCurrency(Math.abs(entry.balance))}
+                  <span className={safeBalance >= 0 ? 'text-green-600' : 'text-red-600'}>
+                    {formatCurrency(Math.abs(safeBalance))}
                   </span>
                 </td>
               </tr>
-            ))}
+            );})}
           </tbody>
         </table>
       </div>
