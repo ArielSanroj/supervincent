@@ -9,16 +9,28 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: '#F2ECFF',
-          100: '#E6D9FF',
-          200: '#D1BDFF',
-          300: '#BBA7F5',
-          400: '#8D66E6',
-          500: '#6A38D0',
-          600: '#582DB0',
-          700: '#472690',
-          800: '#35206F',
-          900: '#24164D',
+          50: '#EDE6F7',
+          100: '#D4C2EF',
+          200: '#BBA7E7',
+          300: '#A28CDF',
+          400: '#8971D7',
+          500: '#6C3AA9',
+          600: '#5A2F8F',
+          700: '#482475',
+          800: '#36195B',
+          900: '#1A1028',
+        },
+        secondary: {
+          50: '#E6F4F8',
+          100: '#CCE9F1',
+          200: '#99D3E3',
+          300: '#66BDD5',
+          400: '#45A3C4',
+          500: '#3A93B6',
+          600: '#2E7A98',
+          700: '#22617A',
+          800: '#16485C',
+          900: '#0A2F3E',
         },
         success: {
           50: '#f0fdf4',
@@ -57,15 +69,20 @@ module.exports = {
           900: '#7f1d1d',
         },
         brand: {
-          purple: '#6A38D0',
-          lavender: '#BBA7F5',
-          light: '#F7F7F7',
-          dark: '#2C2C2C'
+          purple: '#6C3AA9',
+          lavender: '#EDE6F7',
+          light: '#F5F5F5',
+          dark: '#140C20',
+          darkPurple: '#1A1028',
+          textDark: '#333333',
+          textLight: '#FFFFFF',
+          borderGray: '#E0E0E0',
+          placeholderGray: '#999999'
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'Montserrat', 'Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'Nunito Sans', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'Inter', 'Nunito Sans', 'system-ui', 'sans-serif']
       },
     },
   },

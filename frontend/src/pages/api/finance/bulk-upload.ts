@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-const BACKEND_API = process.env.BACKEND_API_URL || 'http://localhost:8010'
+const BACKEND_API = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010'
 
 export const config = {
   api: {
