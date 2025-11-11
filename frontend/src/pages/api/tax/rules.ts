@@ -7,13 +7,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
+
   try {
-    const resp = await axios.get(`${BACKEND_API}/processed/recent`);
-    return res.status(200).json(resp.data);
-  } catch (e: any) {
-    const msg = e?.response?.data || e?.message || 'Failed to load recent';
-    return res.status(500).json({ status: 'error', error: msg });
+    const response = await axios.get(`${BACKEND_API}/tax/rules`);
+    return res.status(200).json(response.data);
+  } catch (error: any) {
+    console.error('Error fetching tax rules:', error?.response?.data || error?.message);
+    return res.status(500).json({ 
+      status: 'error', 
+      error: error?.response?.data || error?.message || 'Failed to load tax rules' 
+    });
   }
 }
-
 

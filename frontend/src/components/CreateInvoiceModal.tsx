@@ -30,9 +30,10 @@ const CreateInvoiceModal: React.FC<CreateInvoiceModalProps> = ({ open, onClose, 
         throw new Error('Completa proveedor y monto válido');
       }
       // Crear realmente en backend local para que alimente recientes, contabilidad y presupuesto
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010';
       let created = false;
       try {
-        const resp = await fetch('http://localhost:8010/process/manual', {
+        const resp = await fetch(`${apiBase}/process/manual`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ vendor, total_amount: total, date, client })

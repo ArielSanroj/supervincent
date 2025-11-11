@@ -31,6 +31,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ open, onClose, onSucc
       const queue = [...fileArray];
       const perFileResults: any[] = [];
 
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010';
       const runWorker = async () => {
         while (queue.length > 0) {
           const f = queue.shift();
@@ -38,7 +39,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({ open, onClose, onSucc
           try {
             const single = new FormData();
             single.append('file', f);
-            const r = await fetch('http://localhost:8010/process/upload', { method: 'POST', body: single });
+            const r = await fetch(`${apiBase}/process/upload`, { method: 'POST', body: single });
             let jd: any = null;
             try { jd = await r.json(); } catch { jd = { success: false, error_message: await r.text() }; }
             const row = {
