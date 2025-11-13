@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <link rel="icon" href="/superbincentlogo.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="alternate icon" href="/superbincentlogo.svg" />
       </Head>
       <Component {...pageProps} />
     </>

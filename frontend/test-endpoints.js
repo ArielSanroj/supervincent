@@ -39,12 +39,15 @@ async function testEndpoint(name, url, method = 'GET', data = null, isBackend = 
     const config = {
       method,
       url: fullUrl,
-      timeout: 10000,
+      timeout: 15000,
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Para ngrok free
+      },
     };
     
     if (data) {
       config.data = data;
-      config.headers = { 'Content-Type': 'application/json' };
+      config.headers['Content-Type'] = 'application/json';
     }
     
     const response = await axios(config);

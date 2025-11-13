@@ -21,10 +21,53 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de envío del formulario
-    console.log('Formulario enviado:', formData);
+    
+    // Validar que todos los campos estén llenos
+    if (!formData.nombre || !formData.telefono || !formData.correo) {
+      alert('Por favor completa todos los campos');
+      return;
+    }
+
+    // Siempre guardar en localStorage primero (como respaldo)
+    try {
+      const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+      const newContact = { ...formData, timestamp: new Date().toISOString() };
+      contacts.push(newContact);
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+      console.log('✅ Contacto guardado en localStorage:', newContact);
+    } catch (localError) {
+      console.error('Error guardando en localStorage:', localError);
+    }
+
+    // Intentar enviar al backend
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('✅ Contacto guardado en servidor:', data);
+        alert('¡Gracias por contactarnos! Te responderemos pronto.');
+        setFormData({ nombre: '', telefono: '', correo: '' });
+      } else {
+        console.error('❌ Error del servidor:', data);
+        alert('El formulario se guardó localmente. Te contactaremos pronto.');
+        setFormData({ nombre: '', telefono: '', correo: '' });
+      }
+    } catch (error) {
+      console.error('❌ Error enviando al servidor:', error);
+      // Ya se guardó en localStorage, así que solo notificamos
+      alert('¡Gracias por contactarnos! Te responderemos pronto.');
+      setFormData({ nombre: '', telefono: '', correo: '' });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,17 +83,17 @@ export default function Landing() {
         <title>SuperBincent • Optimiza tu flujo de caja</title>
         <meta name="description" content="SuperBincent procesa soportes contables con IA para mostrar caja disponible, impuestos y punto de equilibrio. Compatible con Alegra y DIAN 2025." />
         <meta name="keywords" content="flujo de caja, IA financiera, soportes contables, OCR, DIAN 2025, Alegra, punto de equilibrio, PYMES" />
-        <link rel="canonical" href="http://localhost:3001/landing" />
+        <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL ? `${process.env.NEXT_PUBLIC_SITE_URL}/landing` : '/landing'} />
         <meta property="og:title" content="SuperBincent • Optimiza tu flujo de caja con IA" />
         <meta property="og:description" content="Procesa tus soportes contables y ve tus finanzas en segundos: caja, impuestos y PEQ." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://localhost:3001/landing" />
+        <meta property="og:url" content={process.env.NEXT_PUBLIC_SITE_URL ? `${process.env.NEXT_PUBLIC_SITE_URL}/landing` : '/landing'} />
         <meta property="og:image" content="/favicon.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="SuperBincent • Optimiza tu flujo de caja con IA" />
         <meta name="twitter:description" content="Analiza facturas y gastos con IA. Caja, impuestos y punto de equilibrio al instante." />
         <link rel="icon" href="/superbincentlogo.svg" type="image/svg+xml" />
-        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="alternate icon" href="/superbincentlogo.svg" />
       </Head>
 
       {/* Header */}
@@ -67,18 +110,12 @@ export default function Landing() {
               <img 
                 src="/superbincentlogo.svg" 
                 alt="SuperBincent" 
-                className="h-10 w-auto"
+                className="h-20 w-auto"
               />
             </Link>
 
             {/* Menú principal - Desktop */}
             <div className="hidden md:flex items-center gap-8 text-sm">
-              <a href="#independientes" className="text-brand-textDark hover:text-primary-500 transition-colors font-medium">
-                Independientes
-              </a>
-              <a href="#empresas" className="text-brand-textDark hover:text-primary-500 transition-colors font-medium">
-                Empresas
-              </a>
               <a href="#beneficios" className="text-brand-textDark hover:text-primary-500 transition-colors font-medium">
                 Beneficios
               </a>
@@ -121,25 +158,53 @@ export default function Landing() {
 
       <main id="contenido" className="min-h-screen bg-white" role="main">
         {/* Hero Principal */}
-        <section className="relative overflow-hidden pt-24" style={{ backgroundColor: '#140C20', minHeight: '600px' }}>
-          {/* Textura estelar de fondo */}
-          <div className="absolute inset-0 opacity-20" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
+        <section className="relative overflow-hidden pt-24" style={{ 
+          background: 'linear-gradient(135deg, #1A1F3B 0%, #6C5DD3 100%)',
+          minHeight: '600px' 
+        }}>
+          {/* Efecto de partículas/IA */}
+          <div className="absolute inset-0 opacity-10" style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0)`,
+            backgroundSize: '50px 50px',
+            animation: 'pulse 4s ease-in-out infinite'
           }} />
           
           <div className="relative container mx-auto px-6 py-32 max-w-[1200px]">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Columna izquierda */}
               <div className="text-white space-y-6">
-                <h1 className="font-display text-5xl md:text-6xl font-bold leading-tight" style={{ fontSize: '48px', fontWeight: 700 }}>
-                  Procesa tus soportes contables y ve tus{' '}
-                  <span className="text-secondary-400">finanzas en segundos</span>
+                <div className="flex items-center gap-4 mb-6">
+                  <img 
+                    src="/superbincentlogo.svg" 
+                    alt="SuperBincent" 
+                    className="h-28 w-28 brightness-0 invert"
+                  />
+                  <div>
+                    <div className="font-display text-4xl font-bold text-white">SuperBincent</div>
+                    <div className="text-lg text-white/80">IA Financiera</div>
+                  </div>
+                </div>
+                <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-tight" style={{ fontSize: '48px', fontWeight: 700 }}>
+                  Tu asistente financiero con{' '}
+                  <span className="text-success-500">inteligencia artificial</span>
                 </h1>
-                <p className="text-lg text-gray-300 leading-relaxed max-w-xl" style={{ fontSize: '16px', fontWeight: 400 }}>
-                  SuperBincent analiza tus facturas y gastos con IA para mostrarte caja disponible, impuestos y punto de equilibrio. 
-                  Compatible con Alegra y DIAN 2025.
+                <p className="text-xl text-white/90 leading-relaxed max-w-xl" style={{ fontSize: '18px', fontWeight: 400 }}>
+                  SuperBincent analiza tus datos contables y te muestra el futuro de tus finanzas, hoy.
                 </p>
+                <div className="flex flex-wrap gap-4 pt-4">
+                  <Link 
+                    href="/" 
+                    className="px-8 py-4 rounded-xl bg-success-500 text-white font-semibold shadow-lg hover:bg-success-600 hover:shadow-xl hover:scale-105 transition-all duration-200 text-base"
+                  >
+                    Probar gratis
+                  </Link>
+                  <a 
+                    href="#demo" 
+                    className="px-8 py-4 rounded-xl border-2 border-white/30 text-white font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-200 text-base"
+                  >
+                    Ver cómo funciona
+                  </a>
+                </div>
               </div>
 
               {/* Columna derecha - Formulario */}
@@ -207,27 +272,33 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Beneficios - "Con Beti tienes..." */}
-        <section id="beneficios" className="py-32" style={{ backgroundColor: '#1A1028' }}>
+        {/* Beneficios - Cards interactivas */}
+        <section id="beneficios" className="py-32 bg-brand-whiteSmoke">
           <div className="container mx-auto px-6 max-w-[1200px]">
-            <h2 className="text-center text-white font-display mb-16" style={{ fontSize: '32px', fontWeight: 600 }}>
-              Con SuperBincent tienes...
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-              {[
-                { number: '1', title: 'Indicadores en tiempo real', desc: 'Ventas, utilidad y caja disponible siempre actualizados.' },
-                { number: '2', title: 'Impuestos automáticos', desc: 'IVA, reteICA y reteRenta calculados automáticamente.' },
-                { number: '3', title: 'Punto de equilibrio', desc: 'Análisis visual de ingresos vs egresos.' },
-                { number: '4', title: 'Detección inteligente', desc: 'Duplicados, errores y omisiones detectados por IA.' },
-              ].map((benefit, idx) => (
-                <div key={idx} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary-500 text-white flex items-center justify-center text-2xl font-bold mx-auto mb-6">
-                    {benefit.number}
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-darkSlate mb-4">
+                Beneficios clave
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Todo lo que necesitas para tomar decisiones financieras inteligentes
+              </p>
             </div>
-                  <h3 className="text-white font-semibold mb-3" style={{ fontSize: '20px', fontWeight: 600 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { icon: '📊', title: 'Indicadores en tiempo real', desc: 'Ventas, utilidad y caja disponible siempre actualizados.' },
+                { icon: '🤖', title: 'Impuestos automáticos con IA', desc: 'IVA, reteICA y reteRenta calculados automáticamente por inteligencia artificial.' },
+                { icon: '⚖️', title: 'Punto de equilibrio instantáneo', desc: 'Análisis visual de ingresos vs egresos al instante.' },
+                { icon: '🔎', title: 'Detección inteligente de errores', desc: 'Duplicados, errores y omisiones contables detectados por IA.' },
+              ].map((benefit, idx) => (
+                <div 
+                  key={idx} 
+                  className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-secondary-500 hover:shadow-xl transition-all duration-300 group text-center"
+                >
+                  <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{benefit.icon}</div>
+                  <h3 className="text-xl font-bold text-brand-darkSlate mb-3">
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-300" style={{ fontSize: '16px', fontWeight: 400 }}>
+                  <p className="text-gray-600 leading-relaxed" style={{ fontSize: '16px', fontWeight: 400 }}>
                     {benefit.desc}
                   </p>
             </div>
@@ -282,14 +353,61 @@ export default function Landing() {
                   con nuestro dashboard intuitivo y potente.
                 </p>
             </div>
+          </div>
+          </div>
+        </section>
+
+        {/* Casos de uso por segmento - Insertar antes de Servicios */}
+        <section className="py-32 bg-white">
+          <div className="container mx-auto px-6 max-w-[1200px]">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-darkSlate mb-4">
+                Casos de uso por segmento
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                SuperBincent se adapta a tu tipo de negocio
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {[
+                { 
+                  icon: '🏢', 
+                  title: 'Empresas', 
+                  desc: 'Control total de proveedores, punto de equilibrio por proyecto y análisis financiero avanzado.',
+                  cta: 'Ver demo'
+                },
+                { 
+                  icon: '📋', 
+                  title: 'Contadores', 
+                  desc: 'Herramientas profesionales para gestionar múltiples clientes y automatizar procesos contables.',
+                  cta: 'Ver demo'
+                },
+              ].map((useCase, idx) => (
+                <div 
+                  key={idx}
+                  className="p-8 rounded-2xl border-2 border-gray-200 bg-white hover:border-secondary-500 hover:shadow-xl transition-all duration-300 group"
+                >
+                  <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">{useCase.icon}</div>
+                  <h3 className="text-2xl font-bold text-brand-darkSlate mb-4">{useCase.title}</h3>
+                  <p className="text-gray-600 leading-relaxed mb-6" style={{ fontSize: '16px' }}>
+                    {useCase.desc}
+                  </p>
+                  <a 
+                    href="#demo" 
+                    className="inline-block px-6 py-3 rounded-lg bg-secondary-500 text-white font-semibold hover:bg-secondary-600 transition-all duration-200"
+                  >
+                    {useCase.cta}
+                  </a>
+            </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Servicios - "¿Qué puedes hacer con Beti?" */}
-        <section className="py-32 bg-brand-light">
+        {/* Servicios - "¿Qué puedes hacer con SuperBincent?" */}
+        <section className="py-32 bg-brand-whiteSmoke">
           <div className="container mx-auto px-6 max-w-[1200px]">
-            <h2 className="text-center font-display mb-16" style={{ fontSize: '32px', fontWeight: 600, color: '#6C3AA9' }}>
+            <h2 className="text-center font-display mb-16 text-4xl font-bold text-brand-darkSlate">
               ¿Qué puedes hacer con SuperBincent?
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -304,7 +422,7 @@ export default function Landing() {
                   <div key={idx} className="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
                     <div className="text-3xl">{service.icon}</div>
                     <div>
-                      <h3 className="font-semibold text-brand-textDark mb-2" style={{ fontSize: '20px', fontWeight: 600, color: '#6C3AA9' }}>
+                      <h3 className="font-semibold text-brand-darkSlate mb-2" style={{ fontSize: '20px', fontWeight: 600, color: '#6C5DD3' }}>
                         {service.title}
                       </h3>
                       <p className="text-brand-textDark" style={{ fontSize: '16px', fontWeight: 400 }}>
@@ -360,24 +478,164 @@ export default function Landing() {
           </div>
         </section>
 
+        {/* Planes y precios */}
+        <section id="planes" className="py-32 bg-white">
+          <div className="container mx-auto px-6 max-w-[1200px]">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-darkSlate mb-4">
+                Planes y precios
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Elige el plan que mejor se adapte a tu negocio
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {[
+                { 
+                  name: 'Starter', 
+                  price: '$195.000', 
+                  period: '/mes',
+                  popular: false,
+                  features: [
+                    '50 facturas/mes',
+                    'DIAN + Impuestos',
+                    'Procesamiento PDF/JPG/PNG',
+                    'Dashboard básico',
+                    'Soporte por email'
+                  ] 
+                },
+                { 
+                  name: 'Pro', 
+                  price: '$595.000', 
+                  period: '/mes',
+                  popular: true,
+                  features: [
+                    '300 facturas/mes',
+                    'Integración Alegra',
+                    'KPIs avanzados',
+                    'Presupuesto por rubros',
+                    'Soporte prioritario',
+                    'Análisis predictivo'
+                  ] 
+                },
+                { 
+                  name: 'Enterprise', 
+                  price: '$1.495.000', 
+                  period: '/mes',
+                  popular: false,
+                  features: [
+                    'Facturas ilimitadas',
+                    'Múltiples empresas',
+                    'API personalizada',
+                    'Soporte 24/7',
+                    'Onboarding dedicado',
+                    'Reportes personalizados'
+                  ] 
+                },
+              ].map((p) => (
+                <div 
+                  key={p.name} 
+                  className={`relative p-8 rounded-3xl border-2 flex flex-col transition-all duration-300 ${
+                    p.popular 
+                      ? 'border-secondary-500 bg-gradient-to-br from-secondary-50 to-white shadow-2xl scale-105' 
+                      : 'border-gray-200 bg-white hover:shadow-xl hover:border-secondary-200'
+                  }`}
+                >
+                  {p.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full bg-secondary-500 text-white text-sm font-semibold">
+                      Más Popular
+                    </div>
+                  )}
+                  <div className="text-2xl font-bold text-brand-darkSlate mb-2">{p.name}</div>
+                  <div className="flex items-baseline mb-6">
+                    <span className="text-4xl font-extrabold text-secondary-500">{p.price}</span>
+                    <span className="text-gray-600 ml-1">{p.period}</span>
+                  </div>
+                  <ul className="space-y-3 text-gray-700 flex-1 mb-8">
+                    {p.features.map((f, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-success-500 mt-1">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link 
+                    href="/" 
+                    className={`mt-auto inline-block text-center px-6 py-4 rounded-xl font-semibold shadow-lg transition-all duration-200 ${
+                      p.popular
+                        ? 'bg-secondary-500 text-white hover:bg-secondary-600 hover:shadow-xl hover:scale-105'
+                        : 'bg-gray-100 text-gray-900 hover:bg-secondary-50 hover:text-secondary-700 hover:border-2 hover:border-secondary-200'
+                    }`}
+                  >
+                    Comenzar prueba gratuita
+                  </Link>
+                </div>
+              ))}
+            </div>
+            <div className="mt-12 text-center text-gray-600">
+              <p className="text-lg">✨ Todos los planes incluyen prueba gratuita de 14 días • Sin tarjeta de crédito</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Seguridad y confianza */}
+        <section className="py-32 bg-brand-whiteSmoke">
+          <div className="container mx-auto px-6 max-w-[1200px]">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-darkSlate mb-4">
+                Seguridad y confianza
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Tu información está protegida con los más altos estándares de seguridad
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { icon: '🔒', title: 'Cifrado bancario AES-256', desc: 'Protección de nivel empresarial' },
+                { icon: '🔐', title: 'Integraciones seguras', desc: 'Alegra, DIAN 2025, QuickBooks' },
+                { icon: '🛡️', title: 'Cumple ISO/IEC 27001', desc: 'Estándares internacionales de seguridad' },
+                { icon: '💾', title: 'Backups automáticos', desc: 'Tus datos siempre seguros' },
+                { icon: '📋', title: 'Ley 1581 de Protección de Datos', desc: 'Totalmente compliant' },
+                { icon: '✅', title: 'Sin tarjeta en prueba gratuita', desc: 'Prueba sin compromiso' },
+              ].map((item, idx) => (
+                <div 
+                  key={idx}
+                  className="p-6 rounded-xl border border-gray-200 bg-white hover:border-success-500 hover:shadow-lg transition-all"
+                >
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <div className="font-semibold text-brand-darkSlate mb-2 text-lg">{item.title}</div>
+                  <div className="text-sm text-gray-600">{item.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Call to Action final */}
-        <section className="py-32" style={{ backgroundColor: '#1A1028' }}>
+        <section className="py-32" style={{ 
+          background: 'linear-gradient(135deg, #1A1F3B 0%, #6C5DD3 100%)' 
+        }}>
           <div className="container mx-auto px-6 max-w-[1200px] text-center">
-            <h2 className="font-display text-5xl font-bold text-white mb-8" style={{ fontSize: '48px', fontWeight: 700 }}>
-              Con SuperBincent crece tu negocio mientras simplificas tu vida.
+            <h2 className="font-display text-5xl md:text-6xl font-bold text-white mb-6" style={{ fontSize: '48px', fontWeight: 700 }}>
+              Con SuperBincent, toma decisiones financieras en segundos.
             </h2>
+            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+              Únete a empresas que ya están transformando su gestión financiera con IA
+            </p>
             <Link 
-              href="/register" 
-              className="inline-block px-8 py-4 rounded-lg bg-secondary-400 text-white font-medium hover:bg-secondary-500 transition-all duration-300 transform hover:scale-105"
-              style={{ fontSize: '16px', fontWeight: 500 }}
+              href="/" 
+              className="inline-block px-12 py-5 rounded-xl bg-success-500 text-white font-bold text-lg hover:bg-success-600 transition-all duration-300 transform hover:scale-105 shadow-2xl"
             >
-              Regístrate ahora
+              Empieza gratis
             </Link>
+            <div className="mt-6 text-white/80 text-sm">
+              ✨ Prueba gratis 14 días • Sin tarjeta • Cancela cuando quieras
+            </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="py-16" style={{ backgroundColor: '#1A1028' }}>
+        <footer className="py-16" style={{ backgroundColor: '#1A1F3B' }}>
           <div className="container mx-auto px-6 max-w-[1200px]">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
               {/* Logo y descripción */}

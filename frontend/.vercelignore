@@ -1,0 +1,13 @@
+# Archivos a ignorar en Vercel
+node_modules
+.next
+.env.local
+.env.development
+.env.test
+data/
+*.log
+.DS_Store
+test-endpoints.js
+ver-contactos.html
+ver-contactos.md
+

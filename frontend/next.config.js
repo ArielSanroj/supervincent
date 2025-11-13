@@ -3,21 +3,15 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   // Variables de entorno públicas (accesibles en el cliente)
+  // En Vercel, estas se configuran en el dashboard
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
-  // Deshabilitar rewrites en producción ya que usamos API routes
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010'}/:path*`,
-  //     },
-  //   ];
-  // },
   // Configuración para producción
-  output: 'standalone',
   poweredByHeader: false,
+  // Optimizaciones para Vercel
+  compress: true,
+  // No usar output: 'standalone' en Vercel (usa su propio sistema)
 };
 
 module.exports = nextConfig;
