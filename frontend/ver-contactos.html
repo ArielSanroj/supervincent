@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Contactos - SuperBincent</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #1A1F3B;
+        }
+        .contact-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .contact-card strong {
+            color: #6C5DD3;
+        }
+        button {
+            background: #6C5DD3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #564AA9;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 Contactos Recibidos</h1>
+    
+    <div class="info">
+        <h3>Ubicaciones de almacenamiento:</h3>
+        <ul>
+            <li><strong>Archivo JSON:</strong> <code>frontend/data/contacts.json</code></li>
+            <li><strong>API Endpoint:</strong> <code>GET /api/contact</code></li>
+            <li><strong>LocalStorage:</strong> Clave <code>contacts</code> en el navegador</li>
+        </ul>
+    </div>
+
+    <button onclick="cargarContactos()">🔄 Cargar desde API</button>
+    <button onclick="verLocalStorage()">💾 Ver LocalStorage</button>
+    <button onclick="limpiar()">🗑️ Limpiar</button>
+
+    <div id="resultados"></div>
+
+    <script>
+        async function cargarContactos() {
+            try {
+                const response = await fetch('/api/contact');
+                const data = await response.json();
+                
+                const resultados = document.getElementById('resultados');
+                
+                if (data.success && data.data.length > 0) {
+                    resultados.innerHTML = `
+                        <h2>Total: ${data.count} contactos</h2>
+                        ${data.data.map((contact, idx) => `
+                            <div class="contact-card">
+                                <h3>Contacto #${idx + 1}</h3>
+                                <p><strong>Nombre:</strong> ${contact.nombre}</p>
+                                <p><strong>Teléfono:</strong> ${contact.telefono}</p>
+                                <p><strong>Correo:</strong> ${contact.correo}</p>
+                                <p><strong>Fecha:</strong> ${new Date(contact.timestamp).toLocaleString('es-CO')}</p>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    resultados.innerHTML = '<p>No hay contactos almacenados aún.</p>';
+                }
+            } catch (error) {
+                document.getElementById('resultados').innerHTML = 
+                    `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        function verLocalStorage() {
+            try {
+                const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+                const resultados = document.getElementById('resultados');
+                
+                if (contacts.length > 0) {
+                    resultados.innerHTML = `
+                        <h2>LocalStorage: ${contacts.length} contactos</h2>
+                        ${contacts.map((contact, idx) => `
+                            <div class="contact-card">
+                                <h3>Contacto #${idx + 1}</h3>
+                                <p><strong>Nombre:</strong> ${contact.nombre}</p>
+                                <p><strong>Teléfono:</strong> ${contact.telefono}</p>
+                                <p><strong>Correo:</strong> ${contact.correo}</p>
+                                <p><strong>Fecha:</strong> ${new Date(contact.timestamp).toLocaleString('es-CO')}</p>
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    resultados.innerHTML = '<p>No hay contactos en LocalStorage.</p>';
+                }
+            } catch (error) {
+                document.getElementById('resultados').innerHTML = 
+                    `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        }
+
+        function limpiar() {
+            if (confirm('¿Estás seguro de limpiar los resultados?')) {
+                document.getElementById('resultados').innerHTML = '';
+            }
+        }
+
+        // Cargar automáticamente al abrir
+        window.onload = cargarContactos;
+    </script>
+</body>
+</html>
+

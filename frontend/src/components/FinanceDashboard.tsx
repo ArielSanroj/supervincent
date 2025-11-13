@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FinanceDashboard, FinancialIndicators } from '../types/finance';
+import type { FinanceDashboard as FinanceDashboardType, FinancialIndicators } from '../types/finance';
 // import { financeService } from '../services/financeService';
 import IndicatorCard from './IndicatorCard';
 import BudgetList from './BudgetList';
@@ -107,7 +107,7 @@ const categorizeInvoice = (vendor: string | null | undefined): string => {
 };
 
 const FinanceDashboard: React.FC = () => {
-  const [dashboard, setDashboard] = useState<FinanceDashboard | null>(null);
+  const [dashboard, setDashboard] = useState<FinanceDashboardType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'bookkeeping' | 'taxes'>('overview');
@@ -167,21 +167,20 @@ const FinanceDashboard: React.FC = () => {
         const now = new Date();
         const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
         const isCurrentMonth = (d?: string) => d ? d.slice(0,7) === ym : false;
-        const expenseCategories = new Set(['Servicios Públicos','Impuestos','Personal','Gastos Bancarios','Proveedores']);
         let monthSales = 0;
         let monthCosts = 0;
         for (const it of combined) {
           if (!(it?.success && typeof it?.total_amount === 'number')) continue;
-          if (!(isCurrentMonth(it?.date) || isCurrentMonth(it?.timestamp))) continue;
-          const category = categorizeInvoice(it.vendor);
-          if (expenseCategories.has(category)) {
-            monthCosts += Number(it.total_amount) || 0;
-          } else {
-            monthSales += Number(it.total_amount) || 0;
-          }
+          if (!(isCurrentMonth((it as any)?.date) || isCurrentMonth((it as any)?.timestamp))) continue;
+          const isSale = String(it?.invoice_type || '').toLowerCase() === 'venta';
+          if (isSale) monthSales += Number(it.total_amount) || 0;
+          else monthCosts += Number(it.total_amount) || 0;
         }
         const profit = monthSales - monthCosts;
         const availableCash = monthSales - monthCosts;
+        const breakEvenPercent = monthCosts > 0
+          ? Math.min(100, Math.max(0, Math.round((monthSales / monthCosts) * 100)))
+          : (monthSales > 0 ? 100 : 0);
         setDashboard(prev => prev ? {
           ...prev,
           indicators: {
@@ -192,7 +191,7 @@ const FinanceDashboard: React.FC = () => {
             inventoryTurnoverDays: prev.indicators.inventoryTurnoverDays ?? 0,
             availableCash: availableCash,
           },
-          breakEven: { ...prev.breakEven, percent: profit > 0 ? 100 : 0 }
+          breakEven: { ...prev.breakEven, percent: breakEvenPercent }
         } : prev);
         // Aggregate by budget category with individual invoices
         const byCategory: Record<string, { amount: number; invoices: Array<{ vendor: string; amount: number; date?: string; invoice_id?: string }> }> = {
@@ -645,21 +644,20 @@ const FinanceDashboard: React.FC = () => {
               const now = new Date();
               const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
               const isCurrentMonth = (d?: string) => d ? d.slice(0,7) === ym : false;
-              const expenseCategories = new Set(['Servicios Públicos','Impuestos','Personal','Gastos Bancarios','Proveedores']);
               let monthSales = 0;
               let monthCosts = 0;
               for (const it of list) {
                 if (!(it?.success && typeof it?.total_amount === 'number')) continue;
-                if (!(isCurrentMonth(it?.date) || isCurrentMonth(it?.timestamp))) continue;
-                const category = categorizeInvoice(it.vendor);
-                if (expenseCategories.has(category)) {
-                  monthCosts += Number(it.total_amount) || 0;
-                } else {
-                  monthSales += Number(it.total_amount) || 0;
-                }
+                if (!(isCurrentMonth((it as any)?.date) || isCurrentMonth((it as any)?.timestamp))) continue;
+                const isSale = String(it?.invoice_type || '').toLowerCase() === 'venta';
+                if (isSale) monthSales += Number(it.total_amount) || 0;
+                else monthCosts += Number(it.total_amount) || 0;
               }
               const profit = monthSales - monthCosts;
               const availableCash = monthSales - monthCosts;
+              const breakEvenPercent = monthCosts > 0
+                ? Math.min(100, Math.max(0, Math.round((monthSales / monthCosts) * 100)))
+                : (monthSales > 0 ? 100 : 0);
               // Aggregate by budget category with individual invoices
               const byCategory: Record<string, { amount: number; invoices: Array<{ vendor: string; amount: number; date?: string; invoice_id?: string }> }> = {
                 'Servicios Públicos': { amount: 0, invoices: [] },
@@ -700,8 +698,10 @@ const FinanceDashboard: React.FC = () => {
                   inventoryTurnoverDays: prev.indicators.inventoryTurnoverDays ?? 0,
                   availableCash: availableCash,
                 },
-                breakEven: { ...prev.breakEven, percent: profit > 0 ? 100 : 0 }
+                breakEven: { ...prev.breakEven, percent: breakEvenPercent }
               } : prev);
+              // Refrescar contabilidad para que aparezca de inmediato en Libro Mayor y Balance
+              loadBookkeepingData();
             })
             .catch(() => {});
         }}
@@ -713,6 +713,8 @@ const FinanceDashboard: React.FC = () => {
           // Refresh withholdings and budget after bulk upload
           fetch('/api/finance/withholdings').then(r => r.json()).then(d => setWithholdings(d.data)).catch(() => {});
           loadDashboard();
+          // También refrescar contabilidad (Libro mayor, Balance, Libros mayores y menores)
+          loadBookkeepingData();
         }}
       />
       <CreateInvoiceModal
@@ -779,6 +781,7 @@ const FinanceDashboard: React.FC = () => {
             });
           }
           loadDashboard();
+          loadBookkeepingData();
         }}
       />
       <FinancialStrategiesModal open={strategiesOpen} onClose={() => setStrategiesOpen(false)} />
