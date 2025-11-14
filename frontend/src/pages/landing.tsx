@@ -88,7 +88,7 @@ export default function Landing() {
         <meta property="og:description" content="Procesa tus soportes contables y ve tus finanzas en segundos: caja, impuestos y PEQ." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={process.env.NEXT_PUBLIC_SITE_URL ? `${process.env.NEXT_PUBLIC_SITE_URL}/landing` : '/landing'} />
-        <meta property="og:image" content="/favicon.png" />
+        <meta property="og:image" content="/superbincentlogo.svg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="SuperBincent • Optimiza tu flujo de caja con IA" />
         <meta name="twitter:description" content="Analiza facturas y gastos con IA. Caja, impuestos y punto de equilibrio al instante." />
