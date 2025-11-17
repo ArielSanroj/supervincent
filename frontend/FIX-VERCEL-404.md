@@ -72,3 +72,4 @@ Después de aplicar las soluciones:
 3. Asegúrate de que `package.json` esté en `frontend/`
 4. Verifica que `next.config.js` esté presente
 
+
