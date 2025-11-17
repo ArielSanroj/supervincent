@@ -3,15 +3,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import IndicatorCard from '../components/IndicatorCard';
 import BreakEvenSlider from '../components/BreakEvenSlider';
+import ContactModal from '../components/ContactModal';
 import { DollarSign, TrendingUp, Wallet, BarChart3, PiggyBank, Receipt } from 'lucide-react';
 
 export default function Landing() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [formData, setFormData] = useState({
-    nombre: '',
-    telefono: '',
-    correo: ''
-  });
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,62 +17,6 @@ export default function Landing() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validar que todos los campos estén llenos
-    if (!formData.nombre || !formData.telefono || !formData.correo) {
-      alert('Por favor completa todos los campos');
-      return;
-    }
-
-    // Siempre guardar en localStorage primero (como respaldo)
-    try {
-      const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
-      const newContact = { ...formData, timestamp: new Date().toISOString() };
-      contacts.push(newContact);
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-      console.log('✅ Contacto guardado en localStorage:', newContact);
-    } catch (localError) {
-      console.error('Error guardando en localStorage:', localError);
-    }
-
-    // Intentar enviar al backend
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        console.log('✅ Contacto guardado en servidor:', data);
-        alert('¡Gracias por contactarnos! Te responderemos pronto.');
-        setFormData({ nombre: '', telefono: '', correo: '' });
-      } else {
-        console.error('❌ Error del servidor:', data);
-        alert('El formulario se guardó localmente. Te contactaremos pronto.');
-        setFormData({ nombre: '', telefono: '', correo: '' });
-      }
-    } catch (error) {
-      console.error('❌ Error enviando al servidor:', error);
-      // Ya se guardó en localStorage, así que solo notificamos
-      alert('¡Gracias por contactarnos! Te responderemos pronto.');
-      setFormData({ nombre: '', telefono: '', correo: '' });
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
 
   return (
     <>
@@ -132,14 +73,14 @@ export default function Landing() {
 
             {/* Botones - Desktop */}
             <div className="hidden md:flex items-center gap-4">
-              <Link 
-                href="/register" 
+              <button
+                onClick={() => setIsContactModalOpen(true)}
                 className="px-5 py-2.5 rounded-lg border-2 border-primary-500 text-primary-500 font-medium hover:bg-brand-lavender transition-all duration-300"
               >
                 Regístrate
-              </Link>
+              </button>
               <Link 
-                href="/" 
+                href="/app" 
                 className="px-5 py-2.5 rounded-lg bg-secondary-400 text-white font-medium hover:bg-secondary-500 transition-all duration-300"
               >
                 Ingresar
@@ -207,66 +148,19 @@ export default function Landing() {
                 </div>
               </div>
 
-              {/* Columna derecha - Formulario */}
-              <div className="bg-white rounded-xl p-8 shadow-2xl">
-                <h2 className="text-2xl font-bold text-brand-textDark mb-6">Contáctame</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="nombre" className="block text-sm font-medium text-brand-textDark mb-2">
-                      Nombre
-                    </label>
-                    <input
-                      type="text"
-                      id="nombre"
-                      name="nombre"
-                      value={formData.nombre}
-                      onChange={handleChange}
-                      placeholder="Tu nombre completo"
-                      className="w-full px-4 py-3 rounded-md border border-brand-borderGray focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-brand-placeholderGray"
-                      style={{ fontSize: '16px', padding: '12px', borderRadius: '6px' }}
-                      required
-                    />
-                    </div>
-                  <div>
-                    <label htmlFor="telefono" className="block text-sm font-medium text-brand-textDark mb-2">
-                      Teléfono
-                    </label>
-                    <input
-                      type="tel"
-                      id="telefono"
-                      name="telefono"
-                      value={formData.telefono}
-                      onChange={handleChange}
-                      placeholder="Tu número de teléfono"
-                      className="w-full px-4 py-3 rounded-md border border-brand-borderGray focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-brand-placeholderGray"
-                      style={{ fontSize: '16px', padding: '12px', borderRadius: '6px' }}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="correo" className="block text-sm font-medium text-brand-textDark mb-2">
-                      Correo
-                    </label>
-                    <input
-                      type="email"
-                      id="correo"
-                      name="correo"
-                      value={formData.correo}
-                      onChange={handleChange}
-                      placeholder="tu@correo.com"
-                      className="w-full px-4 py-3 rounded-md border border-brand-borderGray focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder:text-brand-placeholderGray"
-                      style={{ fontSize: '16px', padding: '12px', borderRadius: '6px' }}
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-lg bg-secondary-400 text-white font-medium hover:bg-secondary-500 transition-all duration-300 transform hover:scale-105"
-                    style={{ fontSize: '16px', fontWeight: 500, borderRadius: '8px' }}
-                  >
-                    Contáctame
-                  </button>
-                </form>
+              {/* Columna derecha - CTA */}
+              <div className="bg-white rounded-xl p-8 shadow-2xl text-center">
+                <h2 className="text-2xl font-bold text-brand-textDark mb-4">¿Listo para empezar?</h2>
+                <p className="text-gray-600 mb-6">
+                  Completa el formulario y te contactaremos pronto para ayudarte a optimizar tus finanzas.
+                </p>
+                <button
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="w-full py-3 rounded-lg bg-secondary-400 text-white font-medium hover:bg-secondary-500 transition-all duration-300 transform hover:scale-105"
+                  style={{ fontSize: '16px', fontWeight: 500, borderRadius: '8px' }}
+                >
+                  Contáctame
+                </button>
               </div>
             </div>
           </div>
@@ -696,9 +590,15 @@ export default function Landing() {
             <div className="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
               <p>© {new Date().getFullYear()} SuperBincent. Todos los derechos reservados.</p>
             </div>
-          </div>
+        </div>
         </footer>
       </main>
+      
+      {/* Modal de Contacto */}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </>
   );
 }

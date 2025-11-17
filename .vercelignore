@@ -1,0 +1,63 @@
+# Backend files - do not deploy
+*.py
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+env/
+ENV/
+
+# Backend directories
+src/
+legacy/
+tests/
+reports/
+backup/
+compliance_fallback/
+uploads/
+logs/
+
+# Backend config files
+requirements*.txt
+setup.py
+pyproject.toml
+*.yaml
+*.yml
+Dockerfile
+docker-compose.yml
+
+# Documentation (keep only if needed)
+*.md
+!frontend/**/*.md
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Config files (backend)
+config/
+*.json
+!frontend/**/*.json
+!frontend/package*.json
+!vercel.json
+
+# Other files
+.git/
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Only deploy frontend
+# Everything else is ignored above
+
