@@ -4,8 +4,11 @@ import path from 'path';
 
 interface ContactData {
   nombre: string;
+  apellido: string;
   telefono: string;
   correo: string;
+  queHaceEmpresa: string;
+  comoPodemosAyudar: string;
 }
 
 // Archivo donde se guardan los contactos (temporal)
@@ -88,17 +91,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // POST: Guardar nuevo contacto
   if (req.method === 'POST') {
     try {
-      const { nombre, telefono, correo }: ContactData = req.body;
+      const { nombre, apellido, telefono, correo, queHaceEmpresa, comoPodemosAyudar }: ContactData = req.body;
 
       // Validar datos
-      if (!nombre || !telefono || !correo) {
+      if (!nombre || !apellido || !telefono || !correo || !queHaceEmpresa || !comoPodemosAyudar) {
         return res.status(400).json({ message: 'Todos los campos son requeridos' });
       }
 
       const contact = {
         nombre,
+        apellido,
         telefono,
         correo,
+        queHaceEmpresa,
+        comoPodemosAyudar,
         timestamp: new Date().toISOString()
       };
 
