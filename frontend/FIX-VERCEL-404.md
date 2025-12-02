@@ -73,3 +73,6 @@ Después de aplicar las soluciones:
 4. Verifica que `next.config.js` esté presente
 
 
+
+
+
