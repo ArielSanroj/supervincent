@@ -1973,3 +1973,11 @@ uvicorn src.api.app:app --reload --port 8001
 **Versión del Documento**: 1.0.0  
 **Mantenido por**: Equipo de Desarrollo SuperVincent
 
+
+
+
+
+
+
+
+
